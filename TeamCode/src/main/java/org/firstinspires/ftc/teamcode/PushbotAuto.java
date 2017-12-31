@@ -58,7 +58,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  */
 
     @Autonomous(name="Pushbot: Autonomous", group="Pushbot")
-
+    @Disabled
     public class PushbotAuto extends LinearOpMode {
 
         /* Declare OpMode members. */
@@ -67,7 +67,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 
         static final double     FORWARD_SPEED = .5;
-    static final double     BACKWARD_SPEED= -.5;
+        static final double     BACKWARD_SPEED= -.5;
 
     @Override
     public void runOpMode() {

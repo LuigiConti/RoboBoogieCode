@@ -1,0 +1,76 @@
+Relic Arm:
+- Continuous servo
+    - 180 degrees servo
+
+Jewel Arm:
+- 180 degrees Servo
+
+Controller 1:
+- 'x' button gamepad 1 = slow down motors
+
+Controller 2:
+- 'x' button gamepad 2 = open and close claw servos
+- 'left stick' gamepad 2 = raise and lower lift
+////////////////////////////////////////////////////////////////////////////
+
+180 degree servo:
+// move to 0 degrees.
+        servoTest.setPosition(0);
+
+// move to 90 degrees.
+        servoTest.setPosition(0.5);
+
+// move to 180 degrees.
+        servoTest.setPosition(1);
+
+PHONE CAMERA MUST ALWAYS ORIENT TOWARDS THE LEFT-HAND SIDE OF THE JEWEL SET TO READ THE PICTOGRAPH;
+I.E, IT SHOULD BE POSITIONED ON THE LEFT-HAND SIDE OF YOUR ROBOT'S ARM
+
+MEASUREMENTS:
+    - Jewels are 3.75 inches tall, 1.88 radius, 2.25 inches of space between them
+    - Pictograph begins 3 inches to the left from the center-point of the Balancing Stone/Jewel Set,
+      and spans another 11 inches to the left. The picture is 11(w) x 8.5(h) inches
+    - Each Relic Landing Zone is 24(w) x 16(h) with about a two-inch gap between zones
+
+------------------------------------------------------------------------------------------------
+AUTONOMOUS PERIOD (30 seconds):
+
+Cryptobox = three columns for where the glyphs will be placed
+Pictograph returns Left, Center, and Right, which specifies where to place initial glyph during
+autonomous.
+
+SCORING FOR AUTONOMOUS:
+    - One jewels remains on the platform: 30pts
+    - Correct Cryptobox Key:              30pts
+    - Scored in Cryptobox:                15pts
+    - Robot parked in safe zone:          10pts
+                                        ______________
+                                         Total: 85pts
+------------------------------------------------------------------------------------------------
+DRIVER-CONTROLLED PERIOD: (120 seconds):
+
+** IMPORTANT INFORMATION ABOUT RELICS!!! PLEASE READ **
+1.5.4 End Game
+The last thirty seconds of the Driver-Controlled Period is called the End Game. During the End Game
+Robots may reach over the Perimeter Wall and Score a Relic in the Recovery Zone. If a Cryptobox
+Cipher is correctly solved prior to the start of End Game, Teams are permitted to reach over the
+Perimeter Wall and attempt to Score a Relic early. One (1) Relic may be Scored early for each
+completed Cipher. Referees will signal the Alliance when they are allowed to Score a Relic. If a
+Cipher has not been completed, the Alliance must wait for the start of the End Game Period to score
+their Relic. Robots may continue to perform all the other Driver-Controlled Scoring activities
+during the End Game.
+
+SCORING FOR DRIVER:
+    - Relic in Zone 3:                    40pts
+    - Completed Cipher:                   30pts
+    - Relic in Zone 2:                    20pts
+    - Completed Column of 4 (Cryptobox)   20pts per column
+    - Robot Balanced (at end)             20pts
+    - Relic is upright:                   15pts
+    - Relic in Zone 1:                    10pts
+    - Completed Row of 3 (Cryptobox)      10pts per row
+    - Glyph in Cryptobox                  02pts per glyph
+                                         _______________
+                                          Total from glyphs alone: 154pts
+                                          Total potential:         229pts
+------------------------------------------------------------------------------------------------

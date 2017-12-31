@@ -53,6 +53,7 @@ import com.sun.tools.javac.api.ClientCodeWrapper;
 
 public class ThronebotTelopMechanumTank extends OpMode{
 
+    public boolean g1xSlowSwitch = false;
 
     /* Declare OpMode members. */
     org.firstinspires.ftc.teamcode.HardwareThronebot robot = new org.firstinspires.ftc.teamcode.HardwareThronebot(); // use the class created to define a Pushbot's hardware
@@ -106,11 +107,25 @@ public class ThronebotTelopMechanumTank extends OpMode{
         double leftStick2;
 
         // CONTROLLER 1: Assign variables to stick and trigger
+
         // leftstick, rightstick, lefttrigger, righttrigger without numbers is for controller one
-        leftStick= gamepad1.left_stick_y * .10;
-        rightStick = gamepad1.right_stick_y * .10;
-        leftTrigger = gamepad1.left_trigger * .10;
-        rightTrigger = gamepad1.right_trigger * .10;
+        if(!g1xSlowSwitch) {
+            leftStick = gamepad1.left_stick_y * .10;
+            rightStick = gamepad1.right_stick_y * .10;
+            leftTrigger = gamepad1.left_trigger * .10;
+            rightTrigger = gamepad1.right_trigger * .10;
+        } else {
+            leftStick = gamepad1.left_stick_y * .035;
+            rightStick = gamepad1.right_stick_y * .035;
+            leftTrigger = gamepad1.left_trigger * .035;
+            rightTrigger = gamepad1.right_trigger * .035;
+        }
+
+        // SLOW-DOWN TOGGLE with 'x'
+        if(gamepad1.x) {
+            g1xSlowSwitch = !g1xSlowSwitch;
+        }
+
 
         // CONTROLLER 2: Assign variables to stick, triggers, and button
         leftStick2 = gamepad2.left_stick_y;
