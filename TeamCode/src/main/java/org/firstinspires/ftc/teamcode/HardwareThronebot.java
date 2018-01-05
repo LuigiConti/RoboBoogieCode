@@ -35,6 +35,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.ServoConfiguration;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
+
 
 /**
  * This is NOT an opmode.
@@ -64,6 +67,11 @@ public class HardwareThronebot
     public Servo clawLeft = null;
     public Servo clawRight = null;
 
+    public Servo colorArm = null;
+    ColorSensor colorSensor;
+    I2cAddr address = I2cAddr.create8bit(0x4c);
+
+
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime time = new ElapsedTime();
@@ -86,6 +94,10 @@ public class HardwareThronebot
         lift = hwMap.get(DcMotor.class, "lift");
         clawLeft = hwMap.get(Servo.class, "clawLeft");
         clawRight = hwMap.get(Servo.class, "clawRight");
+        colorArm = hwMap.get(Servo.class, "colorArm");
+
+        colorSensor = hwMap.get(ColorSensor.class, "colorSensor");
+        colorSensor.setI2cAddress(address);
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -94,6 +106,7 @@ public class HardwareThronebot
         lift.setDirection(DcMotor.Direction.FORWARD);
         clawLeft.setDirection(Servo.Direction.FORWARD);
         clawRight.setDirection(Servo.Direction.REVERSE);
+
 
 
         // Set all motors to zero power

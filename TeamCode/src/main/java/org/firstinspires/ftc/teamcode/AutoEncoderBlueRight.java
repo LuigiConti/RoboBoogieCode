@@ -34,6 +34,21 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcontroller.external.samples.ConceptVuforiaNavigation;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
@@ -80,14 +95,29 @@ public class AutoEncoderBlueRight extends LinearOpMode {
     static final double     DRIVE_SPEED             = 0.2;
     static final double     TURN_SPEED              = 0.2;
 
+    // Vuforia
+    OpenGLMatrix lastLocation = null;
+    VuforiaLocalizer vuforia;
+    public static final String TAG = "Vuforia VuMark Sample";
+    public static String vuResult = "CENTER";
+
     @Override
     public void runOpMode() {
 
-        /*
-         * Initialize the drive system variables.
-         * The init() method of the hardware class does all the work here
-         */
         robot.init(hardwareMap);
+
+        // VUFORIA
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.vuforiaLicenseKey = "AW+jOMD/////AAAAGTCPFAOCC0h0lT9NG+IUhYoTSfHcS6eqUcs6rjamxLexk4X2WjGj1vBFId36NqcfS+hI5YeBt10jbHBouc6yTELMhry+23bitxSW8X3V+CQe2m0Fj1C/jjwGW74XfSPHWGK1jB3OBhs4aQQNlvTBvyqhFK20iO6Oc5Ylh7ZNTuPQDZTa1ljX19OIUN3bd8/Z70CxyzSl+cDDvEdBNKOVSmmouM10idWw8dydVc/2ODDVouEPy27iDBTZLUND9u6RzL4+wgV5XiKVIwoutxUYZZ2jJX7st7/NIBpGCmsxvA1/OdIqLbEXqXxq+n9TFriTFQ1Agy9Ul1ACOO/Z2e22sMjIABhgHCdA34xe5/BmV3aA";
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+
+        // COLOR SENSOR
+        robot.colorSensor.enableLed(true);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
@@ -112,21 +142,99 @@ public class AutoEncoderBlueRight extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        robot.clawLeft.setPosition(1.0);            // S4: Stop and close the claw.
+        // ********** BLUE RIGHT ************
+        // GRAB GLYPH, LOWER ARM
+        robot.clawLeft.setPosition(1.0);
         robot.clawRight.setPosition(1.0);
+        robot.colorArm.setPosition(1.0);
+        sleep(2000);
+
+        // SCAN PICTURE
+        relicTrackables.activate();
+        runtime.reset();
+        while (runtime.seconds() < 5 ) {
+            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+
+                /* Found an instance of the template. In the actual game, you will probably
+                 * loop until this condition occurs, then move on to act accordingly depending
+                 * on which VuMark was visible. */
+                telemetry.addData("VuMark", "%s visible", vuMark);
+                vuResult = vuMark.toString();
+                // VUMark Code
+                telemetry.addData("PLACE GLYPH AT: ", "" + vuMark.toString());
+
+                /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
+                 * it is perhaps unlikely that you will actually need to act on this pose information, but
+                 * we illustrate it nevertheless, for completeness. */
+                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();
+                telemetry.addData("Pose", format(pose));
+
+                /* We further illustrate how to decompose the pose into useful rotational and
+                 * translational components */
+                if (pose != null) {
+                    VectorF trans = pose.getTranslation();
+                    Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+
+                    // Extract the X, Y, and Z components of the offset of the target relative to the robot
+                    double tX = trans.get(0);
+                    double tY = trans.get(1);
+                    double tZ = trans.get(2);
+
+                    // Extract the rotational components of the target relative to the robot
+                    double rX = rot.firstAngle;
+                    double rY = rot.secondAngle;
+                    double rZ = rot.thirdAngle;
+                }
+            }
+            else {
+                telemetry.addData("VuMark", "not visible");
+            }
+
+            telemetry.update();
+        }
+
+        // SCAN & KNOCK OVER JEWEL
+        telemetry.addData("R: ", robot.colorSensor.red());
+        telemetry.addData("G: ", robot.colorSensor.green());
+        telemetry.addData("B: ", robot.colorSensor.blue());
+        telemetry.addData("A: ", robot.colorSensor.alpha());
         sleep(1000);
+        // for blue team; if red, move back to hit relic. for red team; if red, move forward to hit other relic
+        if(robot.colorSensor.red() > 0) {
+            encoderDrive(DRIVE_SPEED, -.5, -.5, -.5, -.5, 1.0);
+        } else {
+            encoderDrive(DRIVE_SPEED, .5, .5, .5, .5, 1.0);
+        }
 
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-//        encoderDrive(DRIVE_SPEED,  2,  2, 2, 2,  5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   21.5, -21.5, 21.5, -21.5, 21.5);  // S2: Turn Right 12 Inches with 4 Sec timeout
-//        encoderDrive(DRIVE_SPEED, 2, 2, 2, 2, 2);  // S3: Reverse 24 Inches with 4 Sec timeout
+        // RAISE COLOR ARM
+        robot.colorArm.setPosition(0.0);
+        sleep(2000);
 
-        robot.clawLeft.setPosition(0.0);            // S4: Stop and close the claw.
+        // DRIVE TO CRYPTOBOX
+        encoderDrive(TURN_SPEED,   36, 36, 36, 36, 1.0);
+
+        // TURN LEFT
+        encoderDrive(TURN_SPEED,   21.5, -21.5, 21.5, -21.5, 1.0);
+
+        // STRAFE
+        if(vuResult == "LEFT") {
+            encoderDrive(TURN_SPEED,   6, -6, -6, 6, 1.0);
+        }
+        else if (vuResult == "RIGHT") {
+            encoderDrive(TURN_SPEED,   -6, 6, 6, -6, 1.0);
+        }
+        // else "CENTER": Proceed normally
+
+        // MOVE TO CRYPTOBOX COLUMN
+        encoderDrive(TURN_SPEED,   7, 7, 7, 7, 1.0);
+
+        // DROP GLYPH
+        robot.clawLeft.setPosition(0.0);
         robot.clawRight.setPosition(0.0);
-        sleep(1000);     // pause for servos to move
+        sleep(2000);
 
-        telemetry.addData("Path", "Complete");
+        telemetry.addData("Path", "Complete!!!");
         telemetry.update();
     }
 
@@ -207,5 +315,9 @@ public class AutoEncoderBlueRight extends LinearOpMode {
             robot.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //  sleep(250);   // optional pause after each move
         }
+    }
+
+    String format(OpenGLMatrix transformationMatrix) {
+        return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
     }
 }
