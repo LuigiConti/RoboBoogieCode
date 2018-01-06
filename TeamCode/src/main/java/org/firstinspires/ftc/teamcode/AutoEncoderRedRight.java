@@ -147,7 +147,7 @@ public class AutoEncoderRedRight extends LinearOpMode {
         robot.colorArm.setPosition(.93);
         sleep(500);
         robot.lift.setPower(.2);
-        sleep(1000);
+        sleep(1600);
         robot.lift.setPower(0);
 
         // SCAN PICTURE
@@ -207,14 +207,14 @@ public class AutoEncoderRedRight extends LinearOpMode {
             encoderDrive(DRIVE_SPEED, 2, -2, 2, -2, 1.0);
             // raise arm
             robot.colorArm.setPosition(0.0);
-            sleep(500);
+            sleep(700);
             encoderDrive(DRIVE_SPEED, -2, 2, -2, 2, 1.0);
         } else {
             // turn right
             encoderDrive(DRIVE_SPEED, -2, 2, -2, 2, 1.0);
             // raise arm
             robot.colorArm.setPosition(0.0);
-            sleep(500);
+            sleep(700);
             encoderDrive(DRIVE_SPEED, 2, -2, 2, -2, 1.0);
         }
 

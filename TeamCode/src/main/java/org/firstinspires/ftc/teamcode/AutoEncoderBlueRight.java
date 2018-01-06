@@ -245,7 +245,7 @@ public class AutoEncoderBlueRight extends LinearOpMode {
         sleep(1000);
 
         // LITTLE PUSH
-        encoderDrive(DRIVE_SPEED,   1, -1, 1, -1, 1.0);
+        encoderDrive(DRIVE_SPEED,   2, -2, 2, -2, 1.0);
 
 
         telemetry.addData("Path", "Complete!!!");

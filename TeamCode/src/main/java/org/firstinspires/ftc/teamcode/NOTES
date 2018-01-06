@@ -1,7 +1,7 @@
 TODO:
-RELIC ARM:
-1 180
-1 360
+ADD RELIC ARM TO HARDWARE CLASS:
+1 180 SERVO
+1 360 SERVO
 1 motor
 
 --------------------------------------------------------------------------------

@@ -146,7 +146,7 @@ public class AutoEncoderBlueLeft extends LinearOpMode {
         robot.colorArm.setPosition(.93);
         sleep(500);
         robot.lift.setPower(.2);
-        sleep(1000);
+        sleep(1600);
         robot.lift.setPower(0);
 
 
@@ -245,8 +245,9 @@ public class AutoEncoderBlueLeft extends LinearOpMode {
         robot.clawLeft.setPosition(0.0);
         robot.clawRight.setPosition(0.0);
         sleep(1000);
+
         // LITTLE PUSH
-        encoderDrive(DRIVE_SPEED,   .7, -.7, .7, -.7, 1.0);
+        encoderDrive(DRIVE_SPEED,   2, -2, 2, -2, 2);
 
 
         telemetry.addData("Path", "Complete!!!");
