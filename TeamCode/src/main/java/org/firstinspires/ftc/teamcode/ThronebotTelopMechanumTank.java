@@ -53,7 +53,7 @@ import com.sun.tools.javac.api.ClientCodeWrapper;
 
 public class ThronebotTelopMechanumTank extends OpMode{
 
-    public boolean g1xSlowSwitch = false;
+//    public boolean g1xSlowSwitch = false;
 
     /* Declare OpMode members. */
     org.firstinspires.ftc.teamcode.HardwareThronebot robot = new org.firstinspires.ftc.teamcode.HardwareThronebot(); // use the class created to define a Pushbot's hardware
@@ -102,6 +102,7 @@ public class ThronebotTelopMechanumTank extends OpMode{
         double rightStick;
         double leftTrigger;
         double rightTrigger;
+        boolean g1xSlowSwitch = false;
 
         // Controller 2
         double leftStick2;
@@ -110,22 +111,21 @@ public class ThronebotTelopMechanumTank extends OpMode{
 
         // leftstick, rightstick, lefttrigger, righttrigger without numbers is for controller one
         if(!g1xSlowSwitch) {
-            leftStick = gamepad1.left_stick_y * .10;
-            rightStick = gamepad1.right_stick_y * .10;
-            leftTrigger = gamepad1.left_trigger * .10;
-            rightTrigger = gamepad1.right_trigger * .10;
+            leftStick = gamepad1.left_stick_y * .25;
+            rightStick = gamepad1.right_stick_y * .25;
+            leftTrigger = gamepad1.left_trigger * .25;
+            rightTrigger = gamepad1.right_trigger * .25;
         } else {
-            leftStick = gamepad1.left_stick_y * .035;
-            rightStick = gamepad1.right_stick_y * .035;
-            leftTrigger = gamepad1.left_trigger * .035;
-            rightTrigger = gamepad1.right_trigger * .035;
+            leftStick = gamepad1.left_stick_y * .15;
+            rightStick = gamepad1.right_stick_y * .15;
+            leftTrigger = gamepad1.left_trigger * .15;
+            rightTrigger = gamepad1.right_trigger * .15;
         }
 
         // SLOW-DOWN TOGGLE with 'x'
         if(gamepad1.x) {
             g1xSlowSwitch = !g1xSlowSwitch;
         }
-
 
         // CONTROLLER 2: Assign variables to stick, triggers, and button
         leftStick2 = gamepad2.left_stick_y;
@@ -163,7 +163,7 @@ public class ThronebotTelopMechanumTank extends OpMode{
         //Controller 2 Code:
         //If left stick is being moved
         if (leftStick2 != 0 ){
-            robot.lift.setPower(leftStick2*.20);
+            robot.lift.setPower(leftStick2*.25);
             // If left stick is not being moved
         } else if(leftStick2 == 0) {
             robot.lift.setPower(0);
@@ -181,8 +181,6 @@ public class ThronebotTelopMechanumTank extends OpMode{
                 robot.clawRight.setPosition(0.5);
             }
         }
-//        robot.clawLeft.setPosition(robot.clawLeft.getPosition());
-//        robot.clawRight.setPosition(robot.clawRight.getPosition());
     }
 
     /*

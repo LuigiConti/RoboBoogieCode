@@ -141,16 +141,19 @@ public class AutoEncoderRedRight extends LinearOpMode {
         waitForStart();
 
         // ********** RED RIGHT ************
-        // GRAB GLYPH, LOWER ARM
+        // GRAB GLYPH, LOWER ARM, RAISE LIFT
         robot.clawLeft.setPosition(1.0);
         robot.clawRight.setPosition(1.0);
-        robot.colorArm.setPosition(1.0);
-        sleep(2000);
+        robot.colorArm.setPosition(.93);
+        sleep(500);
+        robot.lift.setPower(.2);
+        sleep(1000);
+        robot.lift.setPower(0);
 
         // SCAN PICTURE
         relicTrackables.activate();
         runtime.reset();
-        while (runtime.seconds() < 5 ) {
+        while (runtime.seconds() < 2 ) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
@@ -197,45 +200,55 @@ public class AutoEncoderRedRight extends LinearOpMode {
         telemetry.addData("G: ", robot.colorSensor.green());
         telemetry.addData("B: ", robot.colorSensor.blue());
         telemetry.addData("A: ", robot.colorSensor.alpha());
-        sleep(1000);
-        // for blue team; if red, move back to hit relic. for red team; if red, move forward to hit other relic
+
+        // for blue team; if red, turn right to hit relic. for red team; if red, turn left to hit other relic
         if(robot.colorSensor.red() > 0) {
-            encoderDrive(DRIVE_SPEED, -.5, -.5, -.5, -.5, 1.0);
+            // turn left
+            encoderDrive(DRIVE_SPEED, 2, -2, 2, -2, 1.0);
+            // raise arm
+            robot.colorArm.setPosition(0.0);
+            sleep(500);
+            encoderDrive(DRIVE_SPEED, -2, 2, -2, 2, 1.0);
         } else {
-            encoderDrive(DRIVE_SPEED, .5, .5, .5, .5, 1.0);
+            // turn right
+            encoderDrive(DRIVE_SPEED, -2, 2, -2, 2, 1.0);
+            // raise arm
+            robot.colorArm.setPosition(0.0);
+            sleep(500);
+            encoderDrive(DRIVE_SPEED, 2, -2, 2, -2, 1.0);
         }
 
-        // RAISE COLOR ARM
-        robot.colorArm.setPosition(0.0);
-        sleep(2000);
-
         // DRIVE TO CRYPTOBOX
-        encoderDrive(TURN_SPEED,   24, 24, 24, 24, 1.0);
+        encoderDrive(DRIVE_SPEED,   24, 24, 24, 24, 1.0);
 
         // handle corner
         // turn left
-        encoderDrive(TURN_SPEED,   21.5, -21.5, 21.5, -21.5, 1.0);
+        encoderDrive(DRIVE_SPEED,   21.5, -21.5, 21.5, -21.5, 5.0);
         // forward
-        encoderDrive(TURN_SPEED,   12, 12, 12, 12, 1.0);
+        encoderDrive(DRIVE_SPEED,   -12, -12, -12, -12, 5.0);
         // turn right
-        encoderDrive(TURN_SPEED,   -21.5, 21.5, -21.5, 21.5, 1.0);
+        encoderDrive(DRIVE_SPEED,   -21.5, 21.5, -21.5, 21.5, 5.0);
 
         // STRAFE
         if(vuResult == "LEFT") {
-            encoderDrive(TURN_SPEED,   6, -6, -6, 6, 1.0);
+            encoderDrive(DRIVE_SPEED,   6, -6, -6, 6, 3.0);
         }
         else if (vuResult == "RIGHT") {
-            encoderDrive(TURN_SPEED,   -6, 6, 6, -6, 1.0);
+            encoderDrive(DRIVE_SPEED,   -6, 6, 6, -6, 3.0);
         }
         // else "CENTER": Proceed normally
 
         // FORWARD TO CRYPTOBOX
-        encoderDrive(TURN_SPEED,   7, 7, 7, 7, 1.0);
+        encoderDrive(DRIVE_SPEED,   -7, -7, -7, -7, 3.0);
 
         // DROP GLYPH
         robot.clawLeft.setPosition(0.0);
         robot.clawRight.setPosition(0.0);
-        sleep(2000);
+        sleep(1000);
+
+        // LITTLE PUSH
+        encoderDrive(DRIVE_SPEED,   .7, -.7, .7, -.7, 1.0);
+
 
         telemetry.addData("Path", "Complete!!!");
         telemetry.update();
